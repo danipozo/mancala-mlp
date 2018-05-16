@@ -17,6 +17,10 @@ MancalaTrainingPlayer.cpp: MancalaTrainingPlayer.hpp alpha_beta.cpp alpha_beta.h
 MancalaTrainingPlayer.o: MancalaTrainingPlayer.cpp
 	g++ -c $< -o $@ -O2 -lm -I./ -std=c++17
 
+nn.cpp: nn.hpp
+nn.o: nn.cpp
+	g++ -c $< -o $@ -O2 -lm -I./ -std=c++17
+
 AlumnoBot.cpp: AlumnoBot.h
 AlumnoBot.o: AlumnoBot.cpp
 	g++ -c $< -o $@ -O2 -lm -I./ -std=c++17
@@ -26,7 +30,7 @@ SimulatorLink.o: SimulatorLink.cpp
 	g++ -c $< -o $@ -O2 -lm -I./ -std=c++17
 
 
-all: main.cpp AlumnoBot.o Bot.o GameState.o MancalaTrainingPlayer.o heuristic.o nn.cpp SimulatorLink.o
+all: main.cpp AlumnoBot.o Bot.o GameState.o MancalaTrainingPlayer.o heuristic.o nn.o SimulatorLink.o
 	g++ -oAlumnoBot $^ -I./ -O2 -lm -std=c++17
 
 heuristic.cpp: heuristic.hpp
@@ -36,10 +40,10 @@ heuristic.o: heuristic.cpp
 self_play_parallel.o: self_play_parallel.cpp
 	g++ -c $< -o $@ -O2 -lm -I./ -std=c++17
 
-self_play_parallel: self_play_parallel.o MancalaTrainingPlayer.o heuristic.o GameState_mod.o nn.cpp
+self_play_parallel: self_play_parallel.o MancalaTrainingPlayer.o heuristic.o GameState_mod.o nn.o
 	g++ $^  -O2 -o $@ -std=c++17 -pthread
 
-train_on_database: utils/train_on_database.cpp nn.cpp
+train_on_database: utils/train_on_database.cpp nn.o
 	g++ $^ -I.. -o $@ -O2 -std=c++17 -lsqlite3
 
 clean:
