@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
     const size_t stmt_size = 999;
     char statement_string[stmt_size] =
-        "SELECT * FROM state_reward WHERE occurrences > 7";
+        "SELECT * FROM state_reward WHERE occurrences > 5";
 
     int prepare_code = sqlite3_prepare_v2(db_handle, statement_string,
                                           stmt_size,
@@ -103,12 +103,12 @@ int main(int argc, char** argv)
     /*
      * USE DATA TO TRAIN PREDICTOR
      */
-    size_t epochs = 500;
+    size_t epochs = 700;
     size_t mini_batch_size = 50;
     double eta = 0.05;
     double momentum = 0.9;
 
-    double regularization_parameter = 0.00001;
+    double regularization_parameter = 0.0000001;
 
     MLP predictor({1, 2, 1}, regularization_parameter);
 
@@ -119,13 +119,21 @@ int main(int argc, char** argv)
     predictor.train(data, epochs, mini_batch_size, eta, momentum);
 
     size_t correct = 0;
-    double correct_epsilon = 0.07;
+    double correct_epsilon = 0.05;
+
+    size_t i = 0;
 
     for (auto [x, y] : data) {
         if (std::abs(y(0) - predictor.forward(x)(0)) < correct_epsilon) {
             correct++;
         }
-	//std::cout << "Data: " << y(0) << " prediction: " << predictor.forward(x)(0) << std::endl;
+
+        if ((i % 20) == 0) {
+            std::cout << "Data: " << y(0) << " prediction: " << predictor.forward(x)(
+                          0) <<  " (" << std::abs(y(0) - predictor.forward(x)(0)) << ")" <<  std::endl;
+        }
+
+        i++;
     }
 
     std::cout << "Correct percentage: " << ((double)correct) / data.size() <<

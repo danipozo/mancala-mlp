@@ -46,7 +46,9 @@ class MLP
 
   public:
 
-    MLP(std::initializer_list<size_t> layers, double reg_term) : sizes(layers),
+    MLP() = default;
+
+    MLP(std::vector<size_t> layers, double reg_term = 0) : sizes(layers),
         regularization_parameter(reg_term)
     {
         for (auto it = layers.begin(); it != (layers.end() - 1);
@@ -55,6 +57,16 @@ class MLP
             biases.push_back(Eigen::VectorXd::Random(*(it + 1)));
         }
     }
+
+    // MLP(std::initializer_list<size_t> layers, double reg_term) : sizes(layers),
+    //     regularization_parameter(reg_term)
+    // {
+    //     for (auto it = layers.begin(); it != (layers.end() - 1);
+    //             it++) {
+    //         weights.push_back(Eigen::MatrixXd::Random(*(it + 1), *it));
+    //         biases.push_back(Eigen::VectorXd::Random(*(it + 1)));
+    //     }
+    // }
 
     size_t num_layers() const
     {
@@ -101,6 +113,14 @@ class MLP
         Eigen::VectorXd desired_outputs)
     {
         return activations - desired_outputs;
+        // return ( desired_outputs*(activations.unaryExpr([](double c){
+        //       return 1-c;
+        //       })) +  activations*(desired_outputs.unaryExpr([](double c){
+        //       return 1-c;
+        // 	  })) ) * activations.unaryExpr([](double c)
+        // 					{
+        // 					  return c*(1-c);
+        // 					});
     }
 
     /*

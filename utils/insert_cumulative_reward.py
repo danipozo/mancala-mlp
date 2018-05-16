@@ -11,7 +11,7 @@ files = glob.glob(data_directory+"/*[0-9]")
 conn = sqlite3.connect(db_name)
 cursor = conn.cursor()
 
-alpha = 0.35
+alpha = 0.1
 
 for data_file in files:
     with open(data_file) as csvfile:
